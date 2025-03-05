@@ -14,10 +14,23 @@ function Blog() {
       .then((data) => setBlogs(data.data))
   }, [])
 
+  const handleBookmark = (isBookmark, blogId) => {
+    if (isBookmark) {
+      api.delete("/api/bookmarks", { data: { blogId } })
+    } else {
+      api.post("/api/bookmarks", { blogId })
+    }
+    setBlogs((prevBlogs) =>
+      prevBlogs.map((blog) =>
+        blog.id === blogId ? { ...blog, isBookmark: !isBookmark } : blog
+      )
+    )
+  }
+
   return (
     <div className="blogs">
       {blogs.map((blog) => (
-        <div className="blog">
+        <div className="blog" key={blog.id}>
           <div className="blog-detail">
             <div className="account">
               {blog.accountResponse.avatar ? (
@@ -28,7 +41,10 @@ function Blog() {
               <h5>{blog.accountResponse.email}</h5>
             </div>
             <div className="actions">
-              <MyBookmark status={blog.isBookmark} />
+              <MyBookmark
+                status={blog.isBookmark}
+                onClick={() => handleBookmark(blog.isBookmark, blog.id)}
+              />
             </div>
           </div>
           <div className="blog-content">
