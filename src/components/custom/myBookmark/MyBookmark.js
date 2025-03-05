@@ -11,7 +11,5 @@ export default function MyBookmark({ status, onClick }) {
         <FontAwesomeIcon icon={solidBookmark} onClick={onClick} />
       ) : (
         <FontAwesomeIcon icon={regularBookmark} onClick={onClick} />
-      )}
-    </>
-  )
+      )
 }
