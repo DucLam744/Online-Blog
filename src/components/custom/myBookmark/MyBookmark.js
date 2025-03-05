@@ -3,22 +3,15 @@ import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons"
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons"
 import { useState } from "react"
 
-export default function MyBookmark({ status }) {
-  const [check, setCheck] = useState(Boolean(status))
+export default function MyBookmark({ status, onClick }) {
+  const check = Boolean(status)
   return (
     <>
       {check === true ? (
-        <FontAwesomeIcon
-          icon={solidBookmark}
-          onClick={() => setCheck(!check)}
-        />
+        <FontAwesomeIcon icon={solidBookmark} onClick={onClick} />
       ) : (
-        <FontAwesomeIcon
-          icon={regularBookmark}
-          onClick={() => setCheck(!check)}
-        />
+        <FontAwesomeIcon icon={regularBookmark} onClick={onClick} />
       )}
-      {console.log(check)}
     </>
   )
 }
