@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { useAuth } from "./context/AuthContext"
 import Home from "./components/home/Home"
+import MyBlog from "./components/MyBlog/MyBlog"
 import Blog from "./components/blog/Blog"
 import Login from "./components/login/Login"
 import SignUp from "./components/signUp/SignUp"
@@ -22,11 +23,12 @@ function App() {
       <MyNavbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<Blog />} />
+        <Route path="/my-blog" element={<MyBlog />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/blog-post/:slug" element={<Blog />} />
       </Routes>
     </BrowserRouter>
   )

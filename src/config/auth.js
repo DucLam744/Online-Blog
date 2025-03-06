@@ -2,6 +2,7 @@ import {
   ACCESS_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
   TOKEN_STORAGE,
+  USER_CURRENT,
 } from "../config/env"
 
 const storage = TOKEN_STORAGE
@@ -25,6 +26,14 @@ export const getRefreshToken = () => {
 export const removeToken = () => {
   storage.removeItem(ACCESS_TOKEN_KEY)
   storage.removeItem(REFRESH_TOKEN_KEY)
+}
+
+export const saveAccount = (user) => {
+  storage.setItem(USER_CURRENT, user)
+}
+
+export const getAccount = () => {
+  return storage.getItem(USER_CURRENT)
 }
 
 export const isAuthenticated = () => {

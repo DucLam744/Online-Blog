@@ -6,16 +6,16 @@ import { Navbar, Container, Nav } from "react-bootstrap"
 function MyNavbar() {
   const { state, dispatch } = useAuth()
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="header">
       <Container>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav header" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Link to="/" className="nav-link">
               Home
             </Link>
-            <Link to="/blog" className="nav-link">
-              Blog
+            <Link to="/my-blog" className="nav-link">
+              My Blog
             </Link>
             {state.isAuthenticated ? (
               <>

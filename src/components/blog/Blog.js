@@ -1,64 +1,90 @@
-import "./blog.scss"
-import MyBookmark from "../custom/myBookmark/MyBookmark"
 import { useEffect, useState } from "react"
 import api from "../../api/api"
-import { AVATAR_DEFAULT } from "../../config/env"
+import { useNavigate, useParams } from "react-router-dom"
+import "./blog.scss"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faComments,
+  faEye,
+  faHeart as solidheart,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons"
+import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons"
+import { useAuth } from "../../context/AuthContext"
+import { useError } from "../../context/ErrorContext"
 
-function Blog() {
-  const [blogs, setBlogs] = useState([])
-
+export default function Blog() {
+  const { slug } = useParams()
+  const [blog, setBlog] = useState(null)
+  const [like, setLike] = useState(false)
+  const { state } = useAuth()
+  const { error, showError } = useError()
+  const navigate = useNavigate()
   useEffect(() => {
-    const response = api
-      .get("/api/blogs?page=1")
-      .then((res) => res.data)
-      .then((data) => setBlogs(data.data))
-  }, [])
-
-  const handleBookmark = (isBookmark, blogId) => {
-    if (isBookmark) {
-      api.delete("/api/bookmarks", { data: { blogId } })
-    } else {
-      api.post("/api/bookmarks", { blogId })
+    if (slug == undefined) {
+      showError("Không tìm thấy bài viết")
+      return
     }
-    setBlogs((prevBlogs) =>
-      prevBlogs.map((blog) =>
-        blog.id === blogId ? { ...blog, isBookmark: !isBookmark } : blog
-      )
-    )
+    api
+      .get(`/api/blog-post/${slug}`)
+      .then((data) => data.data)
+      .then((data) => {
+        setBlog(data)
+        setLike(data.isLike)
+      })
+  }, [like])
+
+  const handleLike = () => {
+    if (state.isAuthenticated === false) {
+      navigate("/login")
+      return
+    }
+    if (blog.isLike === false) {
+      api.post(`/api/blogs-statistic/${blog.id}`)
+    } else {
+      api.delete(`/api/blogs-statistic/${blog.id}`)
+    }
+    setLike(!like)
   }
 
   return (
-    <div className="blogs">
-      {blogs.map((blog) => (
-        <div className="blog" key={blog.id}>
-          <div className="blog-detail">
-            <div className="account">
-              {blog.accountResponse.avatar ? (
-                <img src={blog.accountResponse.avatar} />
-              ) : (
-                <img src={AVATAR_DEFAULT} />
-              )}
+    <>
+      {blog && (
+        <div className="blog">
+          <h1 className="title">{blog.title}</h1>
+          <ul className="statistic">
+            <li className="account stat">
+              <FontAwesomeIcon className="icon" icon={faUser} />
               <h5>{blog.accountResponse.email}</h5>
-            </div>
-            <div className="actions">
-              <MyBookmark
-                status={blog.isBookmark}
-                onClick={() => handleBookmark(blog.isBookmark, blog.id)}
+            </li>
+            <li className="view stat">
+              <FontAwesomeIcon className="icon" icon={faEye} />
+              <h5>{blog.viewsCount}</h5>
+            </li>
+            <li className="comment stat">
+              <FontAwesomeIcon className="icon" icon={faComments} />
+              <h5>{blog.commentsCount}</h5>
+            </li>
+            <li className="like stat" onClick={handleLike}>
+              <FontAwesomeIcon
+                className="icon"
+                icon={like === true ? solidheart : regularHeart}
+                style={like === true ? { color: "red" } : ""}
               />
-            </div>
-          </div>
-          <div className="blog-content">
-            <h3>{blog.title}</h3>
-            <p>Xem thêm...</p>
-          </div>
-          <div className="blog-footer">
-            <p>{blog.createdAt}</p>
-            <ul className="tags"></ul>
-          </div>
+              <h5>{blog.likesCount}</h5>
+            </li>
+          </ul>
+          <div
+            className="content"
+            dangerouslySetInnerHTML={{ __html: blog.content }}></div>
+          <ul className="tags">
+            <h5>Tags: </h5>
+            {blog.tagResponses.map((tag) => (
+              <li className="tag">{tag.name}</li>
+            ))}
+          </ul>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   )
 }
-
-export default Blog

@@ -1,17 +1,21 @@
+import { USER_CURRENT } from "../config/env"
+
 export const initialAuthState = {
-  user: null,
-  isAuthenticated: false,
+  user: localStorage.getItem(USER_CURRENT),
+  isAuthenticated: !!localStorage.getItem(USER_CURRENT),
 }
 
 export const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_SUCCESS":
+      localStorage.setItem(USER_CURRENT, JSON.stringify(action.payload))
       return {
         ...state,
         user: action.payload,
         isAuthenticated: true,
       }
     case "LOGOUT":
+      localStorage.setItem(USER_CURRENT, null)
       return {
         ...state,
         user: null,
