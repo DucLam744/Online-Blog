@@ -38,7 +38,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = getRefreshToken()
         if (!refreshToken) {
-          throw new Error("No refresh token available")
+          window.location.href = "/login"
         }
         const response = await axios.get(`${API_URL}/refresh-token`, {
           Authorization: `Bearer ${refreshToken}`,

@@ -4,7 +4,7 @@ export default function MyInput({ name, type, value, onChange }) {
   return (
     <>
       {type === "textarea" ? (
-        <FloatingLabel controlId="floatingTextarea2" label="Comments">
+        <FloatingLabel controlId="floatingTextarea2" label={name}>
           <Form.Control
             as="textarea"
             placeholder={name}

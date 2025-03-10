@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "../../api/api"
-import { data, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import "./blog.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -22,6 +22,7 @@ export default function Blog() {
   const [like, setLike] = useState(false)
   const [comment, setComment] = useState("")
   const [listComment, setListComment] = useState([])
+  const [reply, setReply] = useState(null)
   const { state } = useAuth()
   const { showError } = useError()
   const navigate = useNavigate()
@@ -34,6 +35,9 @@ export default function Blog() {
         setBlog(data)
         setLike(data.isLike)
       })
+  }
+
+  const getBlogComment = async () => {
     await api
       .get(`/api/blog-comment/${slug}`)
       .then((data) => setListComment(data.data))
@@ -44,6 +48,7 @@ export default function Blog() {
       return
     }
     getBlogDetail()
+    getBlogComment()
   }, [])
 
   const handleLike = async () => {
@@ -59,8 +64,23 @@ export default function Blog() {
     getBlogDetail()
   }
 
-  const handleSendComment = () => {
-    api.post()
+  const handleSendComment = async (parentId) => {
+    if (comment) {
+      await api.post(`/api/blog-comment`, {
+        blogId: blog.id,
+        parentId: parentId,
+        content: comment,
+      })
+      setComment("")
+      setReply(null)
+      getBlogDetail()
+      getBlogComment()
+    }
+  }
+
+  const trigger = () => {
+    getBlogDetail()
+    getBlogComment()
   }
 
   return (
@@ -117,8 +137,10 @@ export default function Blog() {
         {blog && blog.commentsCount} comments
       </h4>
       <div className="ms-5 mx-5 ps-5 mt-3">
-        {listComment.map((comment) => (
-          <MyComment comment={comment} />
+        {listComment.map((cmt) => (
+          <>
+            <MyComment comment={cmt} trigger={trigger} />
+          </>
         ))}
       </div>
     </div>
