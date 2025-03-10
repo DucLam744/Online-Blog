@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import api from "../../api/api"
-import { useNavigate, useParams } from "react-router-dom"
+import { data, useNavigate, useParams } from "react-router-dom"
 import "./blog.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -12,43 +12,59 @@ import {
 import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons"
 import { useAuth } from "../../context/AuthContext"
 import { useError } from "../../context/ErrorContext"
+import MyInput from "../custom/myInput/MyInput"
+import { Button } from "react-bootstrap"
+import MyComment from "../custom/myComment/MyComment"
 
 export default function Blog() {
   const { slug } = useParams()
   const [blog, setBlog] = useState(null)
   const [like, setLike] = useState(false)
+  const [comment, setComment] = useState("")
+  const [listComment, setListComment] = useState([])
   const { state } = useAuth()
-  const { error, showError } = useError()
+  const { showError } = useError()
   const navigate = useNavigate()
-  useEffect(() => {
-    if (slug == undefined) {
-      showError("Không tìm thấy bài viết")
-      return
-    }
-    api
+
+  const getBlogDetail = async () => {
+    await api
       .get(`/api/blog-post/${slug}`)
       .then((data) => data.data)
       .then((data) => {
         setBlog(data)
         setLike(data.isLike)
       })
-  }, [like])
+    await api
+      .get(`/api/blog-comment/${slug}`)
+      .then((data) => setListComment(data.data))
+  }
+  useEffect(() => {
+    if (slug == undefined) {
+      showError("Không tìm thấy bài viết")
+      return
+    }
+    getBlogDetail()
+  }, [])
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (state.isAuthenticated === false) {
       navigate("/login")
       return
     }
     if (blog.isLike === false) {
-      api.post(`/api/blogs-statistic/${blog.id}`)
+      await api.post(`/api/blogs-statistic/${blog.id}`)
     } else {
-      api.delete(`/api/blogs-statistic/${blog.id}`)
+      await api.delete(`/api/blogs-statistic/${blog.id}`)
     }
-    setLike(!like)
+    getBlogDetail()
+  }
+
+  const handleSendComment = () => {
+    api.post()
   }
 
   return (
-    <>
+    <div className="pb-5 mb-5">
       {blog && (
         <div className="blog">
           <h1 className="title">{blog.title}</h1>
@@ -85,6 +101,26 @@ export default function Blog() {
           </ul>
         </div>
       )}
-    </>
+
+      <div className="w-50 h-50 ms-5 ps-5">
+        <MyInput
+          type="textarea"
+          name="Comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <Button className="mt-3" onClick={() => handleSendComment()}>
+          Send
+        </Button>
+      </div>
+      <h4 className="fw-bold border-top mt-5 pt-5 ms-5 ps-5">
+        {blog && blog.commentsCount} comments
+      </h4>
+      <div className="ms-5 mx-5 ps-5 mt-3">
+        {listComment.map((comment) => (
+          <MyComment comment={comment} />
+        ))}
+      </div>
+    </div>
   )
 }

@@ -7,10 +7,7 @@
     
     
         .blog{
-            border-radius: 10px;
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(45deg, #ff00ff, #00ffff) border-box;
-            border: 1px solid transparent;
+            border: 1px solid black;
             padding: 10px 20px;
             margin: 10px 0;
         }
@@ -65,5 +62,37 @@
     .search {
         margin-top: 10px;
         margin-left: 100px;
+    }
+    .tags {
+        display: flex;
+        padding-left: 0;
+        padding-top: 20px;
+
+        li {
+            background-color: #e9ecef;
+            list-style-type: none;
+            padding: 1px 20px;
+            margin: 5px;
+            border-radius: 50px;
+        }
+    }
+    .blogs-right {
+        h5{
+            text-align: center;
+            background-color: black;
+            color: white;
+            width: 60%;
+            padding: 10px;
+            margin: auto;
+            margin-top: -70px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            cursor: pointer;
+            &:hover {
+                color: #005eff
+            }
+        }
     }
 }

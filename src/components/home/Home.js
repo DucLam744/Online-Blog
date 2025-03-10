@@ -5,16 +5,16 @@ import { AVATAR_DEFAULT } from "../../config/env"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import "./home.scss"
-import { FormControl, InputGroup } from "react-bootstrap"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
-import InputGroupText from "react-bootstrap/esm/InputGroupText"
+import MyInput from "../custom/myInput/MyInput"
+import MyBlock from "../custom/myBlock/MyBlock"
 
 function Home() {
   const [blogs, setBlogs] = useState([])
   const [page, setPage] = useState({ currentPage: 0, totalPages: 0 })
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState({ input: "", tags: [] })
   const { state } = useAuth()
+  const [tags, setTags] = useState([])
+  const [recentBlogs, setRecentBlogs] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -22,14 +22,14 @@ function Home() {
       if (page.currentPage !== 0) {
         api
           .get("/api/blogs", {
-            params: { page: page.currentPage, search: search },
+            params: { page: page.currentPage, search: search.input },
           })
           .then((res) => res.data)
           .then((data) => {
             setPage({ currentPage: data.page, totalPages: data.totalPages })
             setBlogs(data.data)
           })
-        console.log(blogs)
+        console.log(search.input)
       } else {
         api
           .get("/api/blogs")
@@ -42,10 +42,15 @@ function Home() {
     }
     const delaySearch = setTimeout(() => {
       getBlog()
-    }, 500)
+    }, 200)
 
     return () => clearTimeout(delaySearch)
   }, [page.currentPage, search])
+
+  useEffect(() => {
+    api.get("/api/tags/recent").then((data) => setTags(data.data))
+    api.get("api/blogs/recent").then((data) => setRecentBlogs(data.data))
+  }, [])
 
   const handleBookmark = (isBookmark, blogId) => {
     if (!state.isAuthenticated) {
@@ -69,14 +74,14 @@ function Home() {
     window.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  const handleOpenBlog = (slug, id) => {
+  const handleOpenBlog = async (slug, id) => {
+    await api.post(`/api/view-blog/${id}`)
     navigate(`/blog-post/${slug}`)
-    api.post(`/api/view-blog/${id}`)
   }
 
   return (
-    <div className="d-flex body">
-      <div className="blogs">
+    <div className="d-flex body row mt-5">
+      <div className="blogs col-7">
         {blogs.map((blog) => (
           <div className="blog" key={blog.id}>
             <div className="blog-detail">
@@ -96,16 +101,20 @@ function Home() {
               </div>
             </div>
             <div
-              className="blog-content"
+              className="blog-content mt-3"
               onClick={() => {
                 handleOpenBlog(blog.slug, blog.id)
               }}>
               <h5 className="fw-normal pt-3">{blog.title}</h5>
               <p>Xem thêm...</p>
             </div>
-            <div className="blog-footer">
-              <p>{blog.createdAt}</p>
-              <ul className="tags"></ul>
+            <div className="blog-footer mt-3 d-flex justify-content-between">
+              <strong>{String(blog.createAt).substring(0, 10)}</strong>
+              <ul className="d-flex mt-0 h-75">
+                {blog.tagResponses.map((tag) => (
+                  <li className="tag">{tag.name}</li>
+                ))}
+              </ul>
             </div>
           </div>
         ))}
@@ -121,17 +130,33 @@ function Home() {
           </nav>
         </div>
       </div>
-      <div>
-        <InputGroup className="search">
-          <FormControl
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+      <div className="blogs-right ms-5 mt-2 col-4">
+        <div className="border border-black p-5">
+          <h5 className="search-title">Search</h5>
+          <MyInput
+            name={"Search..."}
+            value={search.input}
+            onChange={(e) => setSearch({ ...search, input: e.target.value })}
           />
-          <InputGroupText>
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </InputGroupText>
-        </InputGroup>
+        </div>
+        <MyBlock name={"Tags"}>
+          <ul className="tags d-flex flex-wrap">
+            {tags && tags.map((tag) => <li className="tag">{tag.name}</li>)}
+          </ul>
+        </MyBlock>
+
+        <MyBlock name={"Recent Blogs"}>
+          <ul className="d-flex flex-wrap pt-3 flex-column">
+            {recentBlogs &&
+              recentBlogs.map((blog) => (
+                <p
+                  onClick={() => handleOpenBlog(blog.slug, blog.id)}
+                  className="text-decoration-underline cursor-pointer">
+                  {blog.title}
+                </p>
+              ))}
+          </ul>
+        </MyBlock>
       </div>
     </div>
   )

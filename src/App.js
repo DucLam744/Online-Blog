@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { useAuth } from "./context/AuthContext"
 import Home from "./components/home/Home"
-import MyBlog from "./components/MyBlog/MyBlog"
+import MyBlog from "./components/myBlog/MyBlog"
 import Blog from "./components/blog/Blog"
 import Login from "./components/login/Login"
 import SignUp from "./components/signUp/SignUp"

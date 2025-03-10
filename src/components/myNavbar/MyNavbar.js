@@ -14,11 +14,11 @@ function MyNavbar() {
             <Link to="/" className="nav-link">
               Home
             </Link>
-            <Link to="/my-blog" className="nav-link">
-              My Blog
-            </Link>
             {state.isAuthenticated ? (
               <>
+                <Link to="/my-blog" className="nav-link">
+                  My Blog
+                </Link>
                 <Link to="/profile" className="nav-link">
                   Profile
                 </Link>

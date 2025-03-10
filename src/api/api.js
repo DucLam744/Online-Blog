@@ -7,6 +7,7 @@ import {
   saveRefreshToken,
   removeToken,
 } from "../config/auth"
+import { useError } from "../context/ErrorContext"
 
 const api = axios.create({
   baseURL: API_URL,
@@ -29,7 +30,7 @@ api.interceptors.response.use(
     const originalRequest = error.config
     if (
       error.response &&
-      error.response.status === 401 &&
+      (error.response.status === 401 || error.response.status === 403) &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth")
     ) {
@@ -46,11 +47,11 @@ api.interceptors.response.use(
 
         saveToken(response.data.accessToken)
         saveRefreshToken(response.data.refreshToken)
-
         originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`
         return api(originalRequest)
       } catch (err) {
         removeToken()
+        window.location.href = "/login"
         return Promise.reject(err)
       }
     }

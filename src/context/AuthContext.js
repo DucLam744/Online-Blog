@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         dispatch({ type: "LOGOUT" })
       }
-      dispatch({ type: "SET_LOADING", payload: false })
     }
     checkAuth()
   }, [])
