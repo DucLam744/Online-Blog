@@ -8,6 +8,7 @@ import { Button, FormControl, InputGroup } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useError } from "../../context/ErrorContext"
+import { LOGIN_SUCCESS } from "../../constants/AuthAction"
 
 function Login() {
   const [email, setEmail] = useState("")
@@ -25,7 +26,7 @@ function Login() {
     try {
       const response = await login(email, password)
       const user = await api.get("/api/accounts")
-      dispatch({ type: "LOGIN_SUCCESS", payload: user.data })
+      dispatch({ type: LOGIN_SUCCESS, payload: user.data })
       navigate("/")
     } catch (error) {
       showError(error.response.data)

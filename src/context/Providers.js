@@ -1,11 +1,14 @@
 // src/context/Providers.js
 import { AuthProvider } from "./AuthContext"
 import { ErrorProvider } from "./ErrorContext"
+import ReplyCommentProvider from "./ReplyCommentContext"
 
 const Providers = ({ children }) => {
   return (
     <AuthProvider>
-      <ErrorProvider>{children}</ErrorProvider>
+      <ErrorProvider>
+        <ReplyCommentProvider>{children}</ReplyCommentProvider>
+      </ErrorProvider>
     </AuthProvider>
   )
 }

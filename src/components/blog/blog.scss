@@ -1,60 +1,58 @@
-.blogs{
- width: 50%;
- margin-top: 100px;
- margin-left: 150px;
-}
+.blog {
+    margin: 50px 100px;
 
-.blog{
-    border-radius: 10px;
-    background: linear-gradient(white, white) padding-box,
-                linear-gradient(45deg, #ff00ff, #00ffff) border-box;
-    border: 3px solid transparent;
-    padding: 10px 20px;
-    margin: 10px 0;
-}
-
-.blog-detail{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.account{
-    display: flex;
-    align-items: center;
-    img{
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 10px;
+    .title {
+        color: #3674B5;
     }
-}
-
-.actions{
-    width: 10%;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    cursor: pointer;
-}
-
-.blog-content{
-    border-bottom: 1px solid #ccc;
-    cursor: pointer;
-}
-
-.blog-footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    ul {
+    .statistic {
         display: flex;
-        list-style: none;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e9ecef;
+
+        .stat {
+            padding: 8px 15px;
+            padding-top: 12px;
+            margin-right: 5px;
+            display: flex;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            
+            .icon {
+                scale: 1.2;
+                margin-right: 15px;
+                padding-top: 3px;
+
+            }
+
+            &:hover {
+                scale: 1.1;
+                color: #005eff
+            }
+        }
+
     }
-    li{
-        background-color: #ccc;
-        border-radius: 20px;
-        margin-right: 10px;
-        padding: 5px
+    .content {
+        border-bottom: 2px solid #e9ecef;
+        h2, h3 {
+            color: #578FCA;
+        }
+    }
+    .tags {
+        display: flex;
+        padding-left: 0;
+        padding-top: 20px;
+
+        h5{
+            margin-bottom: 0;
+            padding-top: 4px;
+        }
+
+        li {
+            background-color: #e9ecef;
+            list-style-type: none;
+            padding: 1px 20px;
+            margin: 5px;
+            border-radius: 5px;
+        }
     }
 }

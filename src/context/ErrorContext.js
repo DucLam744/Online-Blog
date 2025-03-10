@@ -22,9 +22,11 @@ export const ErrorProvider = ({ children }) => {
       {error && (
         <div className="position-fixed top-0 start-50 translate-middle-x w-100 p-3 z-3">
           <Alert
-            className="d-flex align-items-center justify-content-between w-50 mx-auto shadow text-center"
+            className="d-flex align-items-center justify-content-between w-50 mx-auto shadow"
             variant="danger">
-            <span>{error}</span>
+            <span>
+              <pre>{error}</pre>
+            </span>
             <CloseButton onClick={() => setError(null)} />
           </Alert>
         </div>
@@ -34,7 +36,9 @@ export const ErrorProvider = ({ children }) => {
           <Alert
             className="d-flex align-items-center justify-content-between w-50 mx-auto shadow text-center"
             variant="success">
-            <span>{message}</span>
+            <span>
+              <pre>{message}</pre>
+            </span>
             <CloseButton onClick={() => setMessage(null)} />
           </Alert>
         </div>

@@ -8,8 +8,14 @@ export default function MyBookmark({ status, onClick }) {
   return (
     <>
       {check === true ? (
-        <FontAwesomeIcon icon={solidBookmark} onClick={onClick} />
+        <FontAwesomeIcon
+          icon={solidBookmark}
+          style={{ color: "#FFD43B" }}
+          onClick={onClick}
+        />
       ) : (
         <FontAwesomeIcon icon={regularBookmark} onClick={onClick} />
-      )
+      )}
+    </>
+  )
 }

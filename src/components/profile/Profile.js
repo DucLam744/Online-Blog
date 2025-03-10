@@ -1,4 +1,5 @@
 import { useAuth } from "../../context/AuthContext"
+import MyEditor from "../../editor/Editor"
 
 export default function Profile() {
   const { state, dispatch } = useAuth()
